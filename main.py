@@ -1,24 +1,48 @@
+import atexit
 import os
+import socket
 import sys
 import threading
 
 import pystray  # type: ignore
-from filelock import FileLock, Timeout
 from naneos.manager.naneos_device_manager import NaneosDeviceManager
 from PIL import Image
 from pystray import Menu
 from pystray import MenuItem as Item
 
 VERSION = "1.0.0"
+DEFAULT_LOCK_PORT = 52721  # Fester Standardport für deine App
 shutdown_event = threading.Event()
 
-lock_path = os.path.join(os.path.expanduser("~"), ".naneos_upload_tray.lock")
-lock = FileLock(lock_path)
 
-try:
-    lock.acquire(timeout=0.1)
-except Timeout:
-    print("App is already running!")
+class SingleInstance:
+    def __init__(self):
+        self.port = DEFAULT_LOCK_PORT
+        self.sock = None
+
+    def acquire(self) -> bool:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            s.bind(("127.0.0.1", self.port))
+            s.listen(1)
+        except OSError:
+            return False
+        self.sock = s
+        atexit.register(self.release)
+        return True
+
+    def release(self):
+        if self.sock:
+            try:
+                self.sock.close()
+            except Exception:
+                pass
+            self.sock = None
+
+
+instance = SingleInstance()
+if not instance.acquire():
+    print("Another instance is already running. Exiting.")
     sys.exit(0)
 
 
@@ -88,9 +112,3 @@ if __name__ == "__main__":
 
     multiprocessing.freeze_support()
     main()
-
-    lock.release()
-    try:
-        os.remove(lock_path)
-    except FileNotFoundError:
-        pass
