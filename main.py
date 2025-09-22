@@ -3,6 +3,7 @@ import sys
 import threading
 
 import pystray  # type: ignore
+from filelock import FileLock, Timeout
 from naneos.manager.naneos_device_manager import NaneosDeviceManager
 from PIL import Image
 from pystray import Menu
@@ -10,6 +11,15 @@ from pystray import MenuItem as Item
 
 VERSION = "1.0.0"
 shutdown_event = threading.Event()
+
+lock_path = os.path.join(os.path.expanduser("~"), ".naneos_upload_tray.lock")
+lock = FileLock(lock_path)
+
+try:
+    lock.acquire(timeout=0.1)
+except Timeout:
+    print("App is already running!")
+    sys.exit(0)
 
 
 def resource_path(rel_path: str) -> str:
@@ -78,3 +88,9 @@ if __name__ == "__main__":
 
     multiprocessing.freeze_support()
     main()
+
+    lock.release()
+    try:
+        os.remove(lock_path)
+    except FileNotFoundError:
+        pass
