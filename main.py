@@ -1,3 +1,5 @@
+import os
+import sys
 import threading
 
 import pystray  # type: ignore
@@ -7,6 +9,13 @@ from pystray import Menu
 from pystray import MenuItem as Item
 
 shutdown_event = threading.Event()
+
+
+def resource_path(rel_path: str) -> str:
+    """Gibt den richtigen Pfad zu Ressourcen zurück (PyInstaller kompatibel)."""
+    if hasattr(sys, "_MEIPASS"):  # beim PyInstaller-Build
+        return os.path.join(sys._MEIPASS, rel_path)
+    return os.path.join(os.path.dirname(__file__), rel_path)
 
 
 def refresh_menu():
@@ -47,7 +56,8 @@ def main():
 
     menu = Menu(Item("Quit", on_quit))
 
-    icon = pystray.Icon("Naneos Icon", icon=Image.open("img/naneos_icon.png"), menu=menu)
+    icon_path = resource_path("img/naneos_icon.png")
+    icon = pystray.Icon("Naneos Icon", icon=Image.open(icon_path), menu=menu)
 
     manager = NaneosDeviceManager(gathering_interval_seconds=15)
     manager.start()
@@ -63,4 +73,7 @@ def main():
 
 
 if __name__ == "__main__":
+    import multiprocessing
+
+    multiprocessing.freeze_support()
     main()
