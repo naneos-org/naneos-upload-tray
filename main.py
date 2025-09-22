@@ -8,6 +8,7 @@ from PIL import Image
 from pystray import Menu
 from pystray import MenuItem as Item
 
+VERSION = "1.0.0"
 shutdown_event = threading.Event()
 
 
@@ -33,7 +34,7 @@ def refresh_menu():
         if usb_devices:
             usb_items = [Item(f"USB: {dev}", None, enabled=False) for dev in usb_devices]
 
-        base_items = [Item("Quit", on_quit)]
+        base_items = [Item(f"Tool-Version: {VERSION}", None, enabled=False), Item("Quit", on_quit)]
 
         icon.menu = Menu(*(usb_items + ble_items + base_items))
         icon.update_menu()
@@ -54,7 +55,7 @@ def on_quit(icon, item):
 def main():
     global icon, manager
 
-    menu = Menu(Item("Quit", on_quit))
+    menu = Menu([Item(f"Tool-Version: {VERSION}", None, enabled=False), Item("Quit", on_quit)])
 
     icon_path = resource_path("img/naneos_icon.png")
     icon = pystray.Icon("Naneos Icon", icon=Image.open(icon_path), menu=menu)
