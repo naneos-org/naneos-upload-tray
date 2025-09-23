@@ -5,6 +5,7 @@ import sys
 import threading
 
 import pystray  # type: ignore
+from func_timeout import FunctionTimedOut, func_timeout  # type: ignore
 from naneos.manager.naneos_device_manager import NaneosDeviceManager
 from PIL import Image
 from pystray import Menu
@@ -78,14 +79,36 @@ def refresh_menu():
         shutdown_event.wait(timeout=1.0)
 
 
-def on_quit(icon, item):
+def _graceful_shutdown(icon):
     shutdown_event.set()
 
-    manager.stop()
-    manager.join()
+    try:
+        manager.stop()
+    except Exception as e:
+        print(f"[on_quit] manager.stop() Error: {e}", file=sys.stderr)
+
+    try:
+        manager.join(timeout=9)
+    except Exception as e:
+        print(f"[on_quit] manager.join() Error: {e}", file=sys.stderr)
 
     print("Quitting...")
-    icon.stop()
+
+    try:
+        icon.stop()
+    except Exception as e:
+        print(f"[on_quit] icon.stop() Error: {e}", file=sys.stderr)
+
+
+def on_quit(icon, item):
+    print("Quit menu item clicked.")
+    try:
+        func_timeout(10, _graceful_shutdown, args=(icon,))
+        os._exit(0)
+    except FunctionTimedOut:
+        # Deadline gerissen -> harte Notbremse
+        print("[on_quit] Shutdown > 10s, hard shutdown.", file=sys.stderr)
+        os._exit(1)
 
 
 def main():
