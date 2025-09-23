@@ -16,7 +16,6 @@ a = Analysis(
 )
 pyz = PYZ(a.pure)
 
-icon_file = None
 if sys.platform == "win32":
     exe = EXE(
     pyz,
@@ -25,7 +24,7 @@ if sys.platform == "win32":
     a.zipfiles,
     a.datas,
     [],
-    exclude_binaries=True,
+    exclude_binaries=False,
     name='naneos_upload_tray',
     debug=False,
     bootloader_ignore_signals=False,
