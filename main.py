@@ -12,7 +12,7 @@ from pystray import Menu
 from pystray import MenuItem as Item
 from wakepy import keep
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 # Is it possible to take the version from the pyproject.toml
 DEFAULT_LOCK_PORT = 52721  # fix port for single instance lock
 shutdown_event = threading.Event()
