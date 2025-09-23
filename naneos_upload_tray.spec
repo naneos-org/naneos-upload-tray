@@ -18,11 +18,12 @@ pyz = PYZ(a.pure)
 
 icon_file = None
 if sys.platform == "win32":
-    icon_file = "img/naneos_icon.ico"
-
-exe = EXE(
+    exe = EXE(
     pyz,
     a.scripts,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
     [],
     exclude_binaries=True,
     name='naneos_upload_tray',
@@ -36,11 +37,32 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=icon_file,   # Windows: .ico, macOS: None
+    icon='img/naneos_icon.ico',
 )
 
 
+
+
 if sys.platform == "darwin":
+    exe = EXE(
+        pyz,
+        a.scripts,
+        [],
+        exclude_binaries=True,
+        name='naneos_upload_tray',
+        debug=False,
+        bootloader_ignore_signals=False,
+        strip=False,
+        upx=True,
+        console=False,
+        disable_windowed_traceback=False,
+        argv_emulation=False,
+        target_arch=None,
+        codesign_identity=None,
+        entitlements_file=None,
+        icon=None
+    )
+
     coll = COLLECT(
         exe,
         a.binaries,
