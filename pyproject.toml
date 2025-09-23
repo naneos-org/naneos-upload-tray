@@ -9,6 +9,7 @@ dependencies = [
     "naneos-devices>=1.1.6",
     "pillow>=11.3.0",
     "pystray>=0.19.5",
+    "wakepy>=0.10.2.post1",
 ]
 
 [dependency-groups]

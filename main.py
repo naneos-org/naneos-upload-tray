@@ -9,6 +9,7 @@ from naneos.manager.naneos_device_manager import NaneosDeviceManager
 from PIL import Image
 from pystray import Menu
 from pystray import MenuItem as Item
+from wakepy import keep
 
 VERSION = "1.0.0"
 # Is it possible to take the version from the pyproject.toml
@@ -109,4 +110,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    with keep.running():
+        main()
