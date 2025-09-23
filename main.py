@@ -11,7 +11,8 @@ from pystray import Menu
 from pystray import MenuItem as Item
 
 VERSION = "1.0.0"
-DEFAULT_LOCK_PORT = 52721  # Fester Standardport für deine App
+# Is it possible to take the version from the pyproject.toml
+DEFAULT_LOCK_PORT = 52721  # fix port for single instance lock
 shutdown_event = threading.Event()
 
 
@@ -49,7 +50,7 @@ if not instance.acquire():
 def resource_path(rel_path: str) -> str:
     """Gibt den richtigen Pfad zu Ressourcen zurück (PyInstaller kompatibel)."""
     if hasattr(sys, "_MEIPASS"):  # beim PyInstaller-Build
-        return os.path.join(sys._MEIPASS, rel_path)
+        return os.path.join(sys._MEIPASS, rel_path)  # type: ignore
     return os.path.join(os.path.dirname(__file__), rel_path)
 
 
@@ -108,7 +109,4 @@ def main():
 
 
 if __name__ == "__main__":
-    import multiprocessing
-
-    multiprocessing.freeze_support()
     main()
