@@ -101,7 +101,6 @@ def on_quit(icon, item):
         func_timeout(10, _graceful_shutdown, args=(icon,))
         os._exit(0)
     except FunctionTimedOut:
-        # Deadline gerissen -> harte Notbremse
         print("[on_quit] Shutdown > 10s, hard shutdown.", file=sys.stderr)
         os._exit(1)
 
@@ -111,7 +110,7 @@ def toast(
     title: str | None = None,
     duration_ms: int = 3000,
     corner: str = "bottom-right",
-    alpha: float = 0.92,
+    alpha: float = 0.8,
 ):
     """Einfacher Toast, blockiert bis er wieder verschwindet."""
     root = tk.Tk()
@@ -120,16 +119,16 @@ def toast(
     try:
         root.attributes("-alpha", alpha)
     except tk.TclError:
-        pass  # Alpha nicht überall verfügbar
+        pass  # not supported on some systems
 
     frame = tk.Frame(root, bg="black")
     frame.pack()
 
     if title:
-        tk.Label(frame, text=title, bg="black", fg="white", font=("Helvetica", 11, "bold")).pack(
+        tk.Label(frame, text=title, bg="black", fg="white", font=("Helvetica", 50, "bold")).pack(
             anchor="w", padx=12, pady=(10, 0)
         )
-    tk.Label(frame, text=message, bg="black", fg="white", font=("Helvetica", 11)).pack(
+    tk.Label(frame, text=message, bg="black", fg="white", font=("Helvetica", 40)).pack(
         anchor="w", padx=12, pady=(4, 10)
     )
 
@@ -143,6 +142,8 @@ def toast(
         x, y = m, sh - h - m
     elif corner == "top-right":
         x, y = sw - w - m, m
+    elif corner == "center":
+        x, y = (sw - w) // 2, (sh - h) // 2
     else:  # top-left
         x, y = m, m
     root.geometry(f"{w}x{h}+{x}+{y}")
@@ -179,7 +180,7 @@ if __name__ == "__main__":
             "Another instance is already running.",
             title="Naneos Upload Tray",
             duration_ms=2500,
-            corner="top-right",
+            corner="center",
         )
         print("Another instance is already running. Exiting.")
         sys.exit(0)
@@ -188,7 +189,7 @@ if __name__ == "__main__":
         "Tool is running as tray icon.",
         title="Naneos Upload Tray",
         duration_ms=2500,
-        corner="top-right",
+        corner="center",
     )
 
     with keep.running():
