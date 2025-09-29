@@ -3,6 +3,7 @@ import os
 import socket
 import sys
 import threading
+import tkinter as tk
 
 import pystray  # type: ignore
 from func_timeout import FunctionTimedOut, func_timeout  # type: ignore
@@ -41,12 +42,6 @@ class SingleInstance:
             except Exception:
                 pass
             self.sock = None
-
-
-instance = SingleInstance()
-if not instance.acquire():
-    print("Another instance is already running. Exiting.")
-    sys.exit(0)
 
 
 def resource_path(rel_path: str) -> str:
@@ -111,6 +106,51 @@ def on_quit(icon, item):
         os._exit(1)
 
 
+def toast(
+    message: str,
+    title: str | None = None,
+    duration_ms: int = 3000,
+    corner: str = "bottom-right",
+    alpha: float = 0.92,
+):
+    """Einfacher Toast, blockiert bis er wieder verschwindet."""
+    root = tk.Tk()
+    root.overrideredirect(True)
+    root.attributes("-topmost", True)
+    try:
+        root.attributes("-alpha", alpha)
+    except tk.TclError:
+        pass  # Alpha nicht überall verfügbar
+
+    frame = tk.Frame(root, bg="black")
+    frame.pack()
+
+    if title:
+        tk.Label(frame, text=title, bg="black", fg="white", font=("Helvetica", 11, "bold")).pack(
+            anchor="w", padx=12, pady=(10, 0)
+        )
+    tk.Label(frame, text=message, bg="black", fg="white", font=("Helvetica", 11)).pack(
+        anchor="w", padx=12, pady=(4, 10)
+    )
+
+    root.update_idletasks()
+    w, h = root.winfo_width(), root.winfo_height()
+    sw, sh = root.winfo_screenwidth(), root.winfo_screenheight()
+    m = 20
+    if corner == "bottom-right":
+        x, y = sw - w - m, sh - h - m
+    elif corner == "bottom-left":
+        x, y = m, sh - h - m
+    elif corner == "top-right":
+        x, y = sw - w - m, m
+    else:  # top-left
+        x, y = m, m
+    root.geometry(f"{w}x{h}+{x}+{y}")
+
+    root.after(duration_ms, root.destroy)
+    root.mainloop()
+
+
 def main():
     global icon, manager
 
@@ -133,5 +173,23 @@ def main():
 
 
 if __name__ == "__main__":
+    instance = SingleInstance()
+    if not instance.acquire():
+        toast(
+            "Another instance is already running.",
+            title="Naneos Upload Tray",
+            duration_ms=2500,
+            corner="top-right",
+        )
+        print("Another instance is already running. Exiting.")
+        sys.exit(0)
+
+    toast(
+        "Tool is running as tray icon.",
+        title="Naneos Upload Tray",
+        duration_ms=2500,
+        corner="top-right",
+    )
+
     with keep.running():
         main()
