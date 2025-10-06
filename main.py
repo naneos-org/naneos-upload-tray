@@ -13,7 +13,7 @@ from wakepy import keep
 from src.single_instance import SingleInstance
 from src.toast import toast
 
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 
 shutdown_event = threading.Event()
 
