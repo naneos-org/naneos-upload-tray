@@ -112,18 +112,28 @@ if __name__ == "__main__":
         toast(
             "Another instance is already running.",
             title="Naneos Upload Tray",
-            duration_ms=2500,
+            duration_ms=3000,
             corner="center",
         )
         print("Another instance is already running. Exiting.")
         sys.exit(0)
 
-    toast(
-        "Tool is running as tray icon.",
-        title="Naneos Upload Tray",
-        duration_ms=2500,
-        corner="center",
-    )
+    if sys.platform == "darwin":
+        toast(
+            "Tool is running as tray icon.\nYou can find it in the menu bar (top right).",
+            title="Naneos Upload Tray",
+            duration_ms=4000,
+            corner="center",
+            image_path=resource_path("img/screenshot_mac.png"),
+        )
+    elif sys.platform == "win32":
+        toast(
+            "Tool is running as tray icon.\nYou can find it in the system tray (bottom right).",
+            title="Naneos Upload Tray",
+            duration_ms=4000,
+            corner="center",
+            image_path=resource_path("img/screenshot_windows.png"),
+        )
 
     with keep.running():
         main()

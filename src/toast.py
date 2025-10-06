@@ -4,11 +4,12 @@ import tkinter as tk
 def toast(
     message: str,
     title: str | None = None,
-    duration_ms: int = 3000,
+    duration_ms: int = 5000,
     corner: str = "bottom-right",
     alpha: float = 0.8,
+    image_path: str | None = None,  # <--- optionales Bild
 ):
-    """Einfacher Toast, blockiert bis er wieder verschwindet."""
+    """Einfacher Toast mit optionalem Bild, blockiert bis er wieder verschwindet."""
     root = tk.Tk()
     root.overrideredirect(True)
     root.attributes("-topmost", True)
@@ -18,15 +19,30 @@ def toast(
         pass  # not supported on some systems
 
     frame = tk.Frame(root, bg="black")
-    frame.pack()
+    frame.pack(padx=10, pady=10)
+
+    text_frame = tk.Frame(frame, bg="black")
+    text_frame.pack(side="top")
 
     if title:
-        tk.Label(frame, text=title, bg="black", fg="white", font=("Helvetica", 50, "bold")).pack(
-            anchor="w", padx=12, pady=(10, 0)
-        )
-    tk.Label(frame, text=message, bg="black", fg="white", font=("Helvetica", 40)).pack(
-        anchor="w", padx=12, pady=(4, 10)
+        tk.Label(
+            text_frame, text=title, bg="black", fg="white", font=("Helvetica", 50, "bold")
+        ).pack(side="top")
+
+    tk.Label(text_frame, text=message, bg="black", fg="white", font=("Helvetica", 40)).pack(
+        side="top"
     )
+
+    # Bild laden (falls vorhanden)
+    img_label = None
+    if image_path:
+        try:
+            img = tk.PhotoImage(file=image_path)
+            img_label = tk.Label(frame, image=img, bg="black")
+            img_label.image = img  # type: ignore
+            img_label.pack(side="top", expand=True, fill="both", pady=10)
+        except Exception as e:
+            print(f"Fehler beim Laden des Bildes: {e}")
 
     root.update_idletasks()
     w, h = root.winfo_width(), root.winfo_height()
