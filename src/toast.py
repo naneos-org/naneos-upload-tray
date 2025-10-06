@@ -19,7 +19,7 @@ def toast(
         pass  # not supported on some systems
 
     frame = tk.Frame(root, bg="black")
-    frame.pack(padx=10, pady=10)
+    frame.pack(padx=0, pady=0)
 
     text_frame = tk.Frame(frame, bg="black")
     text_frame.pack(side="top")
