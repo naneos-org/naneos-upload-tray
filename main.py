@@ -13,7 +13,7 @@ from wakepy import keep
 from src.single_instance import SingleInstance
 from src.toast import toast
 
-VERSION = "1.0.3"
+VERSION = "1.0.4"
 
 shutdown_event = threading.Event()
 
@@ -106,23 +106,12 @@ def main():
         refresh_thread.join(timeout=5.0)
 
 
-if __name__ == "__main__":
-    instance = SingleInstance()
-    if not instance.acquire():
-        toast(
-            "Another instance is already running.",
-            title="Naneos Upload Tray",
-            duration_ms=3000,
-            corner="center",
-        )
-        print("Another instance is already running. Exiting.")
-        sys.exit(0)
-
+def inform_user_about_tray_location():
     if sys.platform == "darwin":
         toast(
             "Tool is running as tray icon.\nYou can find it in the menu bar (top right).",
             title="Naneos Upload Tray",
-            duration_ms=4000,
+            duration_ms=5000,
             corner="center",
             image_path=resource_path("img/screenshot_mac.png"),
         )
@@ -130,10 +119,25 @@ if __name__ == "__main__":
         toast(
             "Tool is running as tray icon.\nYou can find it in the system tray (bottom right).",
             title="Naneos Upload Tray",
-            duration_ms=4000,
+            duration_ms=5000,
             corner="center",
             image_path=resource_path("img/screenshot_windows.png"),
         )
+
+
+if __name__ == "__main__":
+    instance = SingleInstance()
+    if not instance.acquire():
+        toast(
+            "Another instance is already running. \nNext popup will inform you about tray location.",
+            title="Naneos Upload Tray",
+            duration_ms=5000,
+            corner="center",
+        )
+        inform_user_about_tray_location()
+        sys.exit(0)
+
+    inform_user_about_tray_location()
 
     with keep.running():
         main()
