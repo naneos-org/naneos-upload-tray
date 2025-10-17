@@ -274,7 +274,7 @@ wheels = [
 
 [[package]]
 name = "naneos-devices"
-version = "1.1.11"
+version = "1.1.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bleak" },
@@ -286,9 +286,9 @@ dependencies = [
     { name = "rich" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/61/e6/e94a0de261fd7081f2581abae4bce9e2af88e20804459e06f2816321bd5b/naneos_devices-1.1.11.tar.gz", hash = "sha256:3e1e3f03281826109f34a94cc796900664a9efd96500378ba09a06f363c8bf2c", size = 135242, upload-time = "2025-10-17T14:01:37.924Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3c/f8/fd51ee9710ca2d92181c8b55f9ff3176fd3d02d5398a025d8a64f4cc0f0d/naneos_devices-1.1.12.tar.gz", hash = "sha256:d703923c8fafc7871dea06b00dddff40cdede7aeb98a42fc605807fbadac5a70", size = 135243, upload-time = "2025-10-17T15:03:00.316Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/93/6b/a16f7b3063709165ce7fc5a18adebb84956d3f4acb1b589d0eab604415d6/naneos_devices-1.1.11-py3-none-any.whl", hash = "sha256:f60597982cfc5716bb0b58f361b73e0bf9ba893aeb58a79a758bfdaf57960db4", size = 57272, upload-time = "2025-10-17T14:01:36.409Z" },
+    { url = "https://files.pythonhosted.org/packages/0b/c9/1eec4aa9bbfc6b7e8ae153a1d565f79b85c88df65e12042a930f3307c8f1/naneos_devices-1.1.12-py3-none-any.whl", hash = "sha256:6033128a7a52e22306900fc3dd93f9b22d8e3ab8306da4e6ebf9e46f12f542e6", size = 57274, upload-time = "2025-10-17T15:02:59.009Z" },
 ]
 
 [[package]]
@@ -315,7 +315,7 @@ dev = [
 requires-dist = [
     { name = "filelock", specifier = ">=3.19.1" },
     { name = "func-timeout", specifier = ">=4.3.5" },
-    { name = "naneos-devices", specifier = ">=1.1.11" },
+    { name = "naneos-devices", specifier = ">=1.1.12" },
     { name = "pillow", specifier = ">=11.3.0" },
     { name = "pystray", specifier = ">=0.19.5" },
     { name = "wakepy", specifier = ">=0.10.2.post1" },
